@@ -20,8 +20,10 @@
                             <span slot="title">{{item.name}}</span>
                         </template>
                         <router-link v-for="(citem,cindex) in item.children" 
+                            
                             :to="citem.path" :key="cindex">
                             <el-menu-item 
+                                v-if = "checkHasPermission(citem.identity)"
                                 :index='citem.path'>
                                 <span slot="title">{{citem.name}}</span>
                             </el-menu-item> 
@@ -36,26 +38,42 @@
 <script>
 export default {
   name: "leftmenu",
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
+  },
+  methods :{
+    checkHasPermission (identity) {
+      var userIdentity = this.user.identity;
+      if (userIdentity == 'admin' || !identity) {
+        return true;
+      }
+      if (userIdentity != identity) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
   data() {
     return {
       items: [
         {
-          icon: "fa-money",
-          name: "资金管理",
-          path: "fund",
-          children: [{ path: "foundlist", name: "资金流水" }]
+          icon: "fa-asterisk",
+          name: "添加数据",
+          path: "",
+          children: [
+            { path: "shop", name: "门店管理"},
+            { path: "goods", name: "商品管理"},
+            { path: "frontuser", name: "前台用户管理",identity:"admin"}
+          ]
         },
         {
           icon: "fa-asterisk",
           name: "信息管理",
           path: "info",
           children: [{ path: "infoshow", name: "个人信息" }]
-        },
-        {
-          icon: "fa-asterisk",
-          name: "门店管理",
-          path: "shop",
-          children: [{ path: "shop", name: "门店数据" }]
         }
       ]
     };

@@ -1,7 +1,6 @@
 const Koa = require('koa')
 const app = new Koa()
 const json = require('koa-json')
-const onerror = require("./middleware/error-handle")
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const Moment = require("moment");
