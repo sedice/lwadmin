@@ -6,6 +6,18 @@ var schema = new mongoose.Schema({
     type: String,
     required: true,
     unique:true
+  },
+  password:{
+      type:String,
+      required:true
+  },
+  shop:{
+      type:String,
+      required:true
+  },
+  realname:{
+      type:String,
+      required:true
   }
 })
 
@@ -42,8 +54,13 @@ schema.statics.removeAll = async function () {
   return this.deleteMany({}).exec()
 }
  
-schema.statics.updateById = async function (id,newName) {
-  return this.update({ _id:id }, {name:newName}).exec();
+schema.statics.updateById = async function (id,params) {
+  return this.update({ _id:id }, {
+    name:params.name,
+    password:params.password,
+    realname:params.realname,
+    shop:params.shop
+  }).exec();
 }
 
-module.exports = mongoose.model('Goods', schema);
+module.exports = mongoose.model('FrontUser', schema);

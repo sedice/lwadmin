@@ -15,7 +15,7 @@
     </el-form>
     
     <!-- 添加弹出 -->
-    <DialogShop :dialog = "dialog" :form = "form" @update = "getData"></DialogShop>
+    <DialogFrontUser :dialog = "dialog" :form = "form" @update = "getData"></DialogFrontUser>
     
     <div class="table_container">
       <el-table
@@ -25,7 +25,10 @@
         style = "width: 100%"
       >
         <el-table-column type = "index" label = "序号" align = "center" width = "70"></el-table-column>
-        <el-table-column prop = "name" label = "门店名称" align = "center"></el-table-column>
+        <el-table-column prop = "name" label = "账号" align = "center" width = "200"></el-table-column>
+        <el-table-column prop = "password" label = "密码" align = "center" width = "200"></el-table-column>
+        <el-table-column prop = "shop" label = "门店" align = "center" ></el-table-column>
+        <el-table-column prop = "realname" label = "真实姓名" align = "center" width = "200"></el-table-column>
 
         <el-table-column prop = "operation" align = "center" label = "操作" fixed = "right" width = "180">
           <template slot-scope = "scope">
@@ -70,22 +73,21 @@
 </template>
 
 <script>
-import DialogShop from "../components/DialogShop";
+import DialogFrontUser from "../components/DialogFrontUser";
 
 export default {
-  name: "fundlist",
   data() {
     return {
       tableData: [],
-      allTableData: [],
-      filterTableData: [],
+      shopGroup:[],
       dialog: {
         show: false,
         title: "",
         option: "edit"
       },
       form: {
-        name:""
+        name:"",
+        shopGroup:[]
       },
       //需要给分页组件传的信息
       paginations: {
@@ -94,10 +96,6 @@ export default {
         page_size: 10, // 1页显示多少条
         page_sizes: [10, 20, 50], //每页显示多少条
         layout: "total, sizes, prev, pager, next, jumper" // 翻页属性
-      },
-      search_data: {
-        startTime: "",
-        endTime: ""
       }
     }
   },
@@ -107,7 +105,7 @@ export default {
     }
   },
   components: {
-    DialogShop
+    DialogFrontUser
   },
   created() {
     this.getData();
@@ -118,9 +116,11 @@ export default {
       var page = this.paginations.page_index;
       var pagesize = this.paginations.page_size;
 
-      var url = `/api/shop?page=${page}&pagesize=${pagesize}`;
+      var url = `/api/frontuser?page=${page}&pagesize=${pagesize}`;
       this.$axios.get(url).then(res => {
+        console.log(res.data);
         this.tableData = res.data.group;
+        this.shopGroup = res.data.shopgroup;
         // 设置分页数据
         this.setPaginations(res.data);
       });
@@ -129,31 +129,46 @@ export default {
       // 编辑
       this.dialog = {
         show: true,
-        title: "修改门店信息",
+        title: "修改用户信息",
         option: "edit"
       };
       this.form = {
         name:row.name,
-        id:row._id
+        id:row._id,
+        shop:row.shop,
+        realname:row.realname,
+        shopGroup:this.shopGroup,
+        password:row.password
       };
     },
     onDeleteData(row, index) {
       var id = row._id;
-      this.$axios.delete(`/api/shop/${id}`).then(res => {
+      this.$axios.delete(`/api/frontuser/${id}`).then(res => {
         this.$message("删除成功");
         this.getData();
       });
     },
     onAddData() {
+      if (!Array.isArray(this.shopGroup) || this.shopGroup.length == 0) {
+        this.$message({
+          message: '当前没有可选择的门店,请在 门店管理界面中 先添加门店',
+          type: 'warning'
+        })
+        return;
+      }
       // 添加
       this.dialog = {
         show: true,
-        title: "添加门店信息",
+        title: "添加用户信息",
         option: "add"
       };
 
       this.form = {
-        name:""
+        name:"",
+        password:"",
+        shop:"",
+        shopGroup:this.shopGroup,
+        realname:"",
       };
     },
     handleCurrentChange(page) {

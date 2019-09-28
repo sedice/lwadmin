@@ -25,7 +25,7 @@
         style = "width: 100%"
       >
         <el-table-column type = "index" label = "序号" align = "center" width = "70"></el-table-column>
-        <el-table-column prop = "name" label = "门店名称" align = "center"></el-table-column>
+        <el-table-column prop = "name" label = "商品名称" align = "center"></el-table-column>
 
         <el-table-column prop = "operation" align = "center" label = "操作" fixed = "right" width = "180">
           <template slot-scope = "scope">
@@ -70,10 +70,9 @@
 </template>
 
 <script>
-import DialogShop from "../components/DialogShop";
+import DialogShop from "../components/DialogGoods";
 
 export default {
-  name: "fundlist",
   data() {
     return {
       tableData: [],
@@ -118,7 +117,7 @@ export default {
       var page = this.paginations.page_index;
       var pagesize = this.paginations.page_size;
 
-      var url = `/api/shop?page=${page}&pagesize=${pagesize}`;
+      var url = `/api/goods?page=${page}&pagesize=${pagesize}`;
       this.$axios.get(url).then(res => {
         this.tableData = res.data.group;
         // 设置分页数据
@@ -129,7 +128,7 @@ export default {
       // 编辑
       this.dialog = {
         show: true,
-        title: "修改门店信息",
+        title: "修改商品信息",
         option: "edit"
       };
       this.form = {
@@ -139,7 +138,7 @@ export default {
     },
     onDeleteData(row, index) {
       var id = row._id;
-      this.$axios.delete(`/api/shop/${id}`).then(res => {
+      this.$axios.delete(`/api/goods/${id}`).then(res => {
         this.$message("删除成功");
         this.getData();
       });
@@ -148,7 +147,7 @@ export default {
       // 添加
       this.dialog = {
         show: true,
-        title: "添加门店信息",
+        title: "添加商品信息",
         option: "add"
       };
 

@@ -6,8 +6,9 @@ import Nofind from './views/404'
 import Login from './views/Login'
 import Home from './views/Home'
 import InfoShow from './views/InfoShow'
-import FoundList from './views/FoundList'
 import Shop from './views/Shop'
+import Goods from './views/Goods'
+import FrontUser from './views/FrontUser'
 
 Vue.use(Router)
 
@@ -27,8 +28,9 @@ const router = new Router({
         { path: '', component: Home },
         { path: '/home', name: 'home', component: Home },
         { path: '/shop', name: 'shop', component: Shop },
+        { path: '/goods', name: 'goods', component: Goods },
+        { path: '/frontuser', name: 'frontuser', component: FrontUser },
         { path: '/infoshow', name: 'infoshow', component: InfoShow },
-        { path: '/foundlist', name: 'foundlist', component: FoundList }
       ]
     },
   ]
