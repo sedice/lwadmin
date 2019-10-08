@@ -1,14 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from './views/Index.vue'
-import Register from './views/Register'
 import Nofind from './views/404'
 import Login from './views/Login'
 import Home from './views/Home'
-import InfoShow from './views/InfoShow'
 import Shop from './views/Shop'
 import Goods from './views/Goods'
 import FrontUser from './views/FrontUser'
+import BackUser from './views/BackUser'
+import Store from './views/Store'
+import LackStore from './views/LackStore'
+import Replenish from './views/Replenish'
 
 Vue.use(Router)
 
@@ -18,7 +20,6 @@ const router = new Router({
   routes: [
     { path: '*', name: '/404', component: Nofind },
     { path: '/', redirect: '/index' },
-    { path: '/register', name: 'register', component: Register },
     { path: '/login', name: 'login', component: Login },
     {
       path: '/index',
@@ -30,7 +31,10 @@ const router = new Router({
         { path: '/shop', name: 'shop', component: Shop },
         { path: '/goods', name: 'goods', component: Goods },
         { path: '/frontuser', name: 'frontuser', component: FrontUser },
-        { path: '/infoshow', name: 'infoshow', component: InfoShow },
+        { path: '/backuser', name: 'backuser', component: BackUser },
+        { path: '/store', name: 'store', component: Store },
+        { path: '/lackstore', name: 'lackstore', component: LackStore },
+        { path: '/replenish', name: 'replenish', component: Replenish },
       ]
     },
   ]

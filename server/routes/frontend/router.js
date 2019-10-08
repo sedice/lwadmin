@@ -1,8 +1,8 @@
 const router = require('koa-router')()
 
-// const userRouter = require("./users")
-
-// router.use('/user', userRouter.routes());
-
+router.use('/frontuser', require("./frontuser").routes());
+router.use('/store', require("./store").routes());
+router.use('/lackstore', require("./lackstore").routes());
+router.use('/replenish', require("./replenish").routes());
 
 module.exports = router

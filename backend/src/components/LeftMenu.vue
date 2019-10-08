@@ -20,7 +20,6 @@
                             <span slot="title">{{item.name}}</span>
                         </template>
                         <router-link v-for="(citem,cindex) in item.children" 
-                            
                             :to="citem.path" :key="cindex">
                             <el-menu-item 
                                 v-if = "checkHasPermission(citem.identity)"
@@ -61,19 +60,24 @@ export default {
       items: [
         {
           icon: "fa-asterisk",
-          name: "添加数据",
-          path: "",
+          name: "数据查询",
+          path: "serch",
           children: [
-            { path: "shop", name: "门店管理"},
-            { path: "goods", name: "商品管理"},
-            { path: "frontuser", name: "前台用户管理",identity:"admin"}
+            { path: "store", name: "库存查询" },
+            { path: "lackstore", name: "缺货查询" },
+            { path: "replenish", name: "补货单查询" },
           ]
         },
         {
           icon: "fa-asterisk",
-          name: "信息管理",
-          path: "info",
-          children: [{ path: "infoshow", name: "个人信息" }]
+          name: "添加数据",
+          path: "manage",
+          children: [
+            { path: "shop", name: "门店管理"},
+            { path: "goods", name: "商品管理"},
+            { path: "frontuser", name: "前台用户管理",identity:"admin"},
+            { path: "backuser", name: "后台用户管理",identity:"admin"}
+          ]
         }
       ]
     };
