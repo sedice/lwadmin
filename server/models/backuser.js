@@ -7,14 +7,6 @@ var schema = new mongoose.Schema({
     required: true,
     unique:true
   },
-  realname: {
-    type: String,
-    required: true,
-  },
-  shop: {
-    type: String,
-    required: true
-  },
   password: {
     type: String,
     required: true
@@ -22,18 +14,25 @@ var schema = new mongoose.Schema({
   identity: {
     type: String,
     required: true,
-    defualt:'normal'
+    default:'normal'
   },
 })
 
-schema.statics.findAll = async function (page = 1,perpage = 10) {
+schema.statics.findAll = async function (page = 1,pagesize = 10) {
   page = parseInt(page);
-  perpage = parseInt(perpage);
-  var totalNum = await this.count();
-  var totalPage = tools.getTotalPage(totalNum,perpage);
-  var skipNum = perpage*(page - 1);
-  var data =  await this.find().skip(skipNum).limit(perpage);
-  return data;
+  pagesize = parseInt(pagesize);
+  var total_num = await this.count();
+  var total_page = tools.getTotalPage(total_num,pagesize);
+  var skipNum = pagesize*(page - 1);
+  var group =  await this.find().skip(skipNum).limit(pagesize);
+  var obj = {
+    group,
+    page,
+    pagesize,
+    total_page,
+    total_num
+  }
+  return obj;
 }
 
 schema.statics.findById = async function (id) {
@@ -52,8 +51,11 @@ schema.statics.removeAll = async function () {
   return this.deleteMany({}).exec()
 }
  
-schema.statics.updateById = async function (id,newName) {
-  return this.update({ _id:id }, {name:newName}).exec();
+schema.statics.updateById = async function (id,params) {
+  return this.update({ _id:id }, {
+    name:params.name,
+    password:params.password
+  }).exec();
 }
 
-module.exports = mongoose.model('User', schema);
+module.exports = mongoose.model('BackUser', schema);

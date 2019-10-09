@@ -1,13 +1,11 @@
 const router = require('koa-router')()
 
-const shopRouter = require("./shop.js")
-const goodsRouter = require("./goods.js")
-const frontUserRouter = require("./frontuser.js")
-const backUserRouter = require("./backuser.js")
-
-router.use('/shop', shopRouter.routes());
-router.use('/goods', goodsRouter.routes());
-router.use('/frontuser', frontUserRouter.routes());
-router.use('/user', backUserRouter.routes());
+router.use('/shop', require("./shop").routes());
+router.use('/goods', require("./goods").routes());
+router.use('/frontuser', require("./frontuser").routes());
+router.use('/backuser', require("./backuser").routes());
+router.use('/store', require("./store").routes());
+router.use('/lackstore', require("./lackstore").routes());
+router.use('/replenish', require("./replenish").routes());
 
 module.exports = router

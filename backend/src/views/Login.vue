@@ -48,7 +48,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$axios.post("/api/user/login",this.loginUser).then(res => {
+          this.$axios.post("/api/backuser/login",this.loginUser).then(res => {
             // 登录成功
             const { token } = res.data;
             localStorage.setItem("eleToken", token);
