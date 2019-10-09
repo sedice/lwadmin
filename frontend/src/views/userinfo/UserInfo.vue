@@ -9,7 +9,6 @@
     <div style = "margin-top:47px;">
       <group>
         <cell title="账号" :value = "user.name" ></cell>
-        <cell title="姓名" :value = "user.realname" ></cell>
         <cell title="门店" :value = "user.shop" ></cell>
       </group>
       <x-button class="btn" type = 'primary' @click.native = "clickChange">切换账号</x-button>

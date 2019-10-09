@@ -21,10 +21,15 @@ var schema = new mongoose.Schema({
 schema.statics.findAll = async function (page = 1,pagesize = 10) {
   page = parseInt(page);
   pagesize = parseInt(pagesize);
-  var total_num = await this.count();
+
+  var getQuery = () => {
+    return this.find().where('identity').ne('admin')
+  }
+  
+  var total_num = await getQuery().count();
   var total_page = tools.getTotalPage(total_num,pagesize);
   var skipNum = pagesize*(page - 1);
-  var group =  await this.find().skip(skipNum).limit(pagesize);
+  var group = await getQuery().skip(skipNum).limit(pagesize);
   var obj = {
     group,
     page,
@@ -54,7 +59,8 @@ schema.statics.removeAll = async function () {
 schema.statics.updateById = async function (id,params) {
   return this.update({ _id:id }, {
     name:params.name,
-    password:params.password
+    password:params.password,
+    identity: params.identity
   }).exec();
 }
 

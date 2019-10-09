@@ -45,9 +45,9 @@ export default {
   methods :{
     checkHasPermission (identity) {
       var userIdentity = this.user.identity;
-      if (userIdentity == 'admin' || !identity) {
-        return true;
-      }
+      // 系统管理员大于天,没设置权限,谁都可以去
+      if (!identity || userIdentity == 'admin') return true;
+
       if (userIdentity != identity) {
         return false;
       } else {
@@ -75,8 +75,8 @@ export default {
           children: [
             { path: "shop", name: "门店管理"},
             { path: "goods", name: "商品管理"},
-            { path: "frontuser", name: "前台用户管理",identity:"admin"},
-            { path: "backuser", name: "后台用户管理",identity:"admin"}
+            { path: "frontuser", name: "前台用户管理",identity:"manager"},
+            { path: "backuser", name: "后台用户管理",identity:"manager"}
           ]
         }
       ]

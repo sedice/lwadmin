@@ -1,6 +1,6 @@
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/liangwei', { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose.connect('mongodb://zengqinglong:wa1107238436@148.70.197.56:27017/liangwei', { useUnifiedTopology: true, useNewUrlParser: true });
 
 console.log("准备链接到数据库服务器")
 /**

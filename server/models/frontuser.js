@@ -14,10 +14,6 @@ var schema = new mongoose.Schema({
   shop:{
       type:String,
       required:true
-  },
-  realname:{
-      type:String,
-      required:true
   }
 })
 
@@ -58,7 +54,6 @@ schema.statics.updateById = async function (id,params) {
   return this.update({ _id:id }, {
     name:params.name,
     password:params.password,
-    realname:params.realname,
     shop:params.shop
   }).exec();
 }

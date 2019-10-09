@@ -9,7 +9,7 @@
           size = "small"
           icon = "view"
           @click = "onAddData()"
-          v-if = "user.identity =='admin'"
+          v-if = "hasOperAccess"
         >添加</el-button>
       </el-form-item>
     </el-form>
@@ -22,26 +22,24 @@
         :data = "tableData"
         max-height = "600"
         border
-        style = "width: 100%"
+        style = "width: 1200px;"
       >
         <el-table-column type = "index" label = "序号" align = "center" width = "70"></el-table-column>
-        <el-table-column prop = "name" label = "账号" align = "center" width = "200"></el-table-column>
-        <el-table-column prop = "password" label = "密码" align = "center" width = "200"></el-table-column>
-
-        <el-table-column prop = "operation" align = "center" label = "操作" fixed = "right" width = "180">
+        <el-table-column prop = "name" label = "账号" align = "center" ></el-table-column>
+        <el-table-column prop = "password" label = "密码" align = "center" ></el-table-column>
+        <el-table-column prop = "identity" :formatter = 'identityFormatter' label = "权限" align = "center" ></el-table-column>
+        <el-table-column v-if = 'hasOperAccess' prop = "operation" align = "center" label = "操作" fixed = "right" width = "180">
           <template slot-scope = "scope">
             <el-button
               type="warning"
               icon="edit"
               size="small"
               @click="onUpdateData(scope.row)"
-              v-if="user.identity =='admin' && scope.row.identity != 'admin'"
             >修改</el-button>
             <el-button
               type="danger"
               icon="delete"
               size="small"
-              v-if="user.identity =='admin' && scope.row.identity != 'admin'"
               @click="onDeleteData(scope.row,scope.$index)"
             >删除</el-button>
           </template>
@@ -49,7 +47,7 @@
       </el-table> 
 
       <!-- 分页 -->
-      <el-row>
+      <el-row style="width:1200px;">
         <el-col :span="24">
           <div class="pagination">
             <el-pagination
@@ -85,7 +83,8 @@ export default {
       },
       form: {
         name:"",
-        password:""
+        password:"",
+        identity:"normal"
       },
       //需要给分页组件传的信息
       paginations: {
@@ -100,6 +99,10 @@ export default {
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    hasOperAccess () {
+      var group = ['admin','manager'];
+      return group.some(val => val == this.user.identity)
     }
   },
   components: {
@@ -122,6 +125,8 @@ export default {
       });
     },
     onUpdateData(row) {
+      if (!this.checkHasDelAndUpAccess(row)) return;
+
       // 编辑
       this.dialog = {
         show: true,
@@ -131,15 +136,44 @@ export default {
       this.form = {
         name:row.name,
         id:row._id,
-        password:row.password
+        password:row.password,
+        identity:row.identity
       };
     },
+    checkHasDelAndUpAccess(row) {
+      var userIdentity = this.user.identity;
+      if (userIdentity != 'admin' && userIdentity != 'manager') {
+        this.$message({
+          type: 'success',
+          message: '你没有此权限'
+        });
+        return false;
+      }
+
+      if (userIdentity == 'manager' && row.identity == 'manager' && this.user.name != row.name) {
+        this.$message({
+          type: 'success',
+          message: '您没有操作该管理员的权限'
+        });
+        return false;
+      }
+      return true;
+    },
     onDeleteData(row, index) {
-      var id = row._id;
-      this.$axios.delete(`/api/backuser/${id}`).then(res => {
-        this.$message("删除成功");
-        this.getData();
-      });
+      if (!this.checkHasDelAndUpAccess(row)) return;
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios.delete(`/api/backuser/${row._id}`).then(res => {
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            });
+            this.getData();
+          });
+        }).catch(()=>{})
     },
     onAddData() {
       // 添加
@@ -151,7 +185,8 @@ export default {
 
       this.form = {
         name:"",
-        password:""
+        password:"",
+        identity:"normal"
       };
     },
     handleCurrentChange(page) {
@@ -168,6 +203,12 @@ export default {
       this.paginations.total = data.total_num;
       this.paginations.page_index = data.page;
       this.paginations.page_size = data.pagesize;
+    },
+    identityFormatter(row, column, cellValue, index) {
+      if (cellValue == 'normal') return "普通";
+      else if (cellValue == 'manager') return "管理员";
+      else if (cellValue == 'admin') return "admin";
+      else return "未知"
     }
   }
 };

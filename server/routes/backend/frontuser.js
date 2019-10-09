@@ -13,8 +13,8 @@ router.get('/', async function (ctx, next) {
 })
 
 router.post('/', async function (ctx, next) {
-  var { name ,password,realname,shop} = ctx.request.body;
-  if (!name || !password || !realname || !shop) {
+  var { name ,password,shop} = ctx.request.body;
+  if (!name || !password || !shop) {
     ctx.status = 400;
     return ctx.body = { errcode: 1, errmsg: "用户信息不全"}
   }
@@ -29,7 +29,7 @@ router.post('/', async function (ctx, next) {
     ctx.status = 400;
     return ctx.body = { errcode: 1, errmsg: "找不到该门店"}
   }
-  await userModel.create({name,password,realname,shop});
+  await userModel.create({name,password,shop});
   ctx.body = {errcode: 0, errmsg: "添加成功"};
 })
 
@@ -40,8 +40,8 @@ router.put('/:id', async function (ctx, next) {
     return ctx.body = { errcode: 1, errmsg: "id不能为空" }
   }
 
-  var { name,shop,password,realname} = ctx.request.body;
-  if (!name || !shop || !password || !realname) {
+  var { name,shop,password} = ctx.request.body;
+  if (!name || !shop || !password ) {
     ctx.status = 400;
     return ctx.body = { errcode: 1, errmsg: "参数错误" }
   }

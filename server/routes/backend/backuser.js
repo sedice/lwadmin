@@ -11,8 +11,8 @@ router.get('/', async function (ctx, next) {
 })
 
 router.post('/', async function (ctx, next) {
-  var { name ,password,realname,shop} = ctx.request.body;
-  if (!name || !password ) {
+  var { name,identity,password,realname,shop} = ctx.request.body;
+  if (!name || !password || !identity) {
     ctx.status = 400;
     return ctx.body = { errcode: 1, errmsg: "用户信息不全"}
   }
@@ -22,7 +22,7 @@ router.post('/', async function (ctx, next) {
     ctx.status = 400;
     return ctx.body = { errcode: 1, errmsg: "用户已存在"}
   }
-  await userModel.create({name,password});
+  await userModel.create({ name, password, identity});
   ctx.body = {errcode: 0, errmsg: "添加成功"};
 })
 
@@ -33,8 +33,8 @@ router.put('/:id', async function (ctx, next) {
     return ctx.body = { errcode: 1, errmsg: "id不能为空" }
   }
 
-  var { name,password} = ctx.request.body;
-  if (!name || !password) {
+  var { name, password, identity} = ctx.request.body;
+  if (!name || !password || !identity) {
     ctx.status = 400;
     return ctx.body = { errcode: 1, errmsg: "参数错误" }
   }
@@ -42,7 +42,7 @@ router.put('/:id', async function (ctx, next) {
   var data = await userModel.findById(id);
   if (!data) {
     ctx.status = 400;
-    return ctx.body = { errcode: 1, errmsg: `找不到用户`}
+    return ctx.body = {errcode: 1, errmsg: `找不到用户`}
   }
   await userModel.updateById(id,ctx.request.body);
   ctx.body = {errcode: 0, errmsg: "修改成功"}

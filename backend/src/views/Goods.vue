@@ -9,7 +9,7 @@
           size = "small"
           icon = "view"
           @click = "onAddData()"
-          v-if = "user.identity =='admin'"
+          v-if = "hasOperAccess"
         >添加</el-button>
       </el-form-item>
     </el-form>
@@ -17,7 +17,7 @@
     <!-- 添加弹出 -->
     <DialogShop :dialog = "dialog" :form = "form" @update = "getData"></DialogShop>
     
-    <div class="table_container">
+    <div style="width:1000px;">
       <el-table
         :data = "tableData"
         max-height = "600"
@@ -27,20 +27,18 @@
         <el-table-column type = "index" label = "序号" align = "center" width = "70"></el-table-column>
         <el-table-column prop = "name" label = "商品名称" align = "center"></el-table-column>
 
-        <el-table-column prop = "operation" align = "center" label = "操作" fixed = "right" width = "180">
+        <el-table-column v-if = "hasOperAccess" prop = "operation" align = "center" label = "操作" fixed = "right" width = "180">
           <template slot-scope = "scope">
             <el-button
               type="warning"
               icon="edit"
               size="small"
               @click="onUpdateData(scope.row)"
-              v-if="user.identity =='admin'"
             >修改</el-button>
             <el-button
               type="danger"
               icon="delete"
               size="small"
-              v-if="user.identity =='admin'"
               @click="onDeleteData(scope.row,scope.$index)"
             >删除</el-button>
           </template>
@@ -103,6 +101,10 @@ export default {
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    hasOperAccess () {
+      var group = ['admin','manager'];
+      return group.some(val => val == this.user.identity)
     }
   },
   components: {
@@ -137,11 +139,19 @@ export default {
       };
     },
     onDeleteData(row, index) {
-      var id = row._id;
-      this.$axios.delete(`/api/goods/${id}`).then(res => {
-        this.$message("删除成功");
-        this.getData();
-      });
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios.delete(`/api/goods/${row._id}`).then(res => {
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            });
+            this.getData();
+          });
+        }).catch(()=>{})
     },
     onAddData() {
       // 添加
