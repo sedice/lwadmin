@@ -1,5 +1,6 @@
 <template>
   <div class="fillcontain">
+    <TitlePanel title = "当前位置:  数据查询 / 缺货查询"></TitlePanel>
     <!-- 头顶的搜索框 -->
     <SerchPanel
       @clickSerch = 'clickSerch' 
@@ -26,6 +27,7 @@
               icon="edit"
               size="small"
               @click="onDeleteData(scope.row)"
+              v-if = "hasOperAccess"
             >删除</el-button>
 
             <el-button
@@ -39,23 +41,7 @@
       </el-table> 
 
       <!-- 分页 -->
-      <el-row>
-        <el-col :span="24">
-          <div class="pagination">
-            <el-pagination
-              v-if="paginations.total > 0"
-              :page-sizes="paginations.page_sizes"
-              :page-size="paginations.page_size"
-              :layout="paginations.layout"
-              :total="paginations.total"
-              :current-page.sync="paginations.page_index"
-              @current-change="handleCurrentChange"
-              @size-change="handleSizeChange"
-            ></el-pagination>
-          </div>
-        </el-col>
-      </el-row>
-    <!-- 弹框页面 -->
+      <PagePanel :paginations = 'paginations' @updateData = 'getData'></PagePanel>
     </div>
     
     <DialogStoreDetail
@@ -68,6 +54,8 @@
 
 import SerchPanel from "../components/SerchPanel";
 import DialogStoreDetail from "../components/DialogStoreDetail";
+import TitlePanel from "../components/TitlePanel";
+import PagePanel from "../components/PagePanel";
 
 export default {
   data() {
@@ -90,19 +78,22 @@ export default {
         page_index: 1, // 当前位于哪页
         total: 0, // 总数
         page_size: 10, // 1页显示多少条
-        page_sizes: [10, 20, 50], //每页显示多少条
-        layout: "total, sizes, prev, pager, next, jumper" // 翻页属性
       }
     }
   },
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    hasOperAccess () {
+      return this.user.identity == 'admin' || this.user.identity == 'manager'
     }
   },
   components: {
     SerchPanel,
-    DialogStoreDetail
+    DialogStoreDetail,
+    TitlePanel,
+    PagePanel
   },
   created() {
     this.getData();
@@ -161,7 +152,6 @@ export default {
         var time = this.serchRule.time[1] + 23*59*59*1000;
         url += `&time_to=${time}`
       }
-      console.log(url);
       this.$axios.get(url).then(res => {
         // 初始化商品的数组
         if (this.serchRule.shopgroup.length == 0) {

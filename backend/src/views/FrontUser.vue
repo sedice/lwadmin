@@ -1,22 +1,20 @@
 <template>
   <div class="fillcontain">
-    
+    <!-- 标题 -->
+    <TitlePanel title = "当前位置:  添加数据 / 前台用户管理"></TitlePanel>
+
     <!-- 添加框 -->
     <el-form>
       <el-form-item >
-        <el-button
-          type = "primary"
-          size = "small"
-          icon = "view"
-          @click = "onAddData()"
-          v-if = "hasOperAccess"
+        <el-button type = "primary" size = "small" icon = "view" @click = "onAddData()" v-if = "hasOperAccess"
         >添加</el-button>
       </el-form-item>
     </el-form>
-    
+  
     <!-- 添加弹出 -->
     <DialogFrontUser :dialog = "dialog" :form = "form" @update = "getData"></DialogFrontUser>
-    
+
+    <!-- table -->
     <div style = "width: 1200px">
       <el-table
         :data = "tableData"
@@ -40,35 +38,22 @@
               type="danger"
               icon="delete"
               size="small"
+              @click="onDeleteData(scope.row,scope.$index)"
             >删除</el-button>
           </template>
         </el-table-column>
       </el-table> 
-
       <!-- 分页 -->
-      <el-row>
-        <el-col :span="24">
-          <div class="pagination">
-            <el-pagination
-              v-if="paginations.total > 0"
-              :page-sizes="paginations.page_sizes"
-              :page-size="paginations.page_size"
-              :layout="paginations.layout"
-              :total="paginations.total"
-              :current-page.sync="paginations.page_index"
-              @current-change="handleCurrentChange"
-              @size-change="handleSizeChange"
-            ></el-pagination>
-          </div>
-        </el-col>
-      </el-row>
-    <!-- 弹框页面 -->
+      <PagePanel :paginations = 'paginations' @updateData = 'getData'></PagePanel>
     </div>
+    
   </div>
 </template>
 
 <script>
 import DialogFrontUser from "../components/DialogFrontUser";
+import TitlePanel from "../components/TitlePanel";
+import PagePanel from "../components/PagePanel";
 
 export default {
   data() {
@@ -89,8 +74,6 @@ export default {
         page_index: 1, // 当前位于哪页
         total: 0, // 总数
         page_size: 10, // 1页显示多少条
-        page_sizes: [10, 20, 50], //每页显示多少条
-        layout: "total, sizes, prev, pager, next, jumper" // 翻页属性
       }
     }
   },
@@ -104,23 +87,20 @@ export default {
     }
   },
   components: {
-    DialogFrontUser
+    DialogFrontUser,
+    TitlePanel,
+    PagePanel
   },
   created() {
     this.getData();
   },
   methods: {
     getData() {
-      // 获取表格数据
-      var page = this.paginations.page_index;
-      var pagesize = this.paginations.page_size;
-
-      var url = `/api/frontuser?page=${page}&pagesize=${pagesize}`;
+      let {page_index,page_size} = this.paginations;
+      var url = `/api/frontuser?page=${page_index}&pagesize=${page_size}`;
       this.$axios.get(url).then(res => {
-        console.log(res.data);
         this.tableData = res.data.group;
         this.shopGroup = res.data.shopgroup;
-        // 设置分页数据
         this.setPaginations(res.data);
       });
     },
@@ -177,15 +157,6 @@ export default {
         shopGroup:this.shopGroup,
         realname:"",
       };
-    },
-    handleCurrentChange(page) {
-      this.paginations.page_index = page;
-      this.getData();
-    },
-    handleSizeChange(page_size) {
-      this.paginations.page_index = 1;
-      this.paginations.page_size = page_size;
-      this.getData();
     },
     setPaginations(data) {
       // 总页数

@@ -1,5 +1,6 @@
 <template>
   <div class="fillcontain">
+    <TitlePanel title = "当前位置:  数据查询 / 补货数据查询"></TitlePanel>
     <!-- 头顶的搜索框 -->
     <SerchPanel
       @clickSerch = 'clickSerch' 
@@ -26,6 +27,7 @@
               icon="edit"
               size="small"
               @click="onDeleteData(scope.row)"
+              v-if = "hasOperAccess"
             >删除</el-button>
 
             <el-button
@@ -39,22 +41,7 @@
       </el-table> 
 
       <!-- 分页 -->
-      <el-row>
-        <el-col :span="24">
-          <div class="pagination">
-            <el-pagination
-              v-if="paginations.total > 0"
-              :page-sizes="paginations.page_sizes"
-              :page-size="paginations.page_size"
-              :layout="paginations.layout"
-              :total="paginations.total"
-              :current-page.sync="paginations.page_index"
-              @current-change="handleCurrentChange"
-              @size-change="handleSizeChange"
-            ></el-pagination>
-          </div>
-        </el-col>
-      </el-row>
+      <PagePanel :paginations = 'paginations' @updateData = 'getData'></PagePanel>
     <!-- 弹框页面 -->
     </div>
     
@@ -68,6 +55,8 @@
 
 import SerchPanel from "../components/SerchPanel";
 import DialogReplenishDetail from "../components/DialogReplenishDetail";
+import TitlePanel from "../components/TitlePanel";
+import PagePanel from "../components/PagePanel";
 
 export default {
   data() {
@@ -97,11 +86,16 @@ export default {
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    hasOperAccess () {
+      return this.user.identity == 'admin' || this.user.identity == 'manager'
     }
   },
   components: {
     SerchPanel,
-    DialogReplenishDetail
+    DialogReplenishDetail,
+    TitlePanel,
+    PagePanel
   },
   created() {
     this.getData();

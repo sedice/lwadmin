@@ -22,7 +22,7 @@
             <el-form-item prop = "password" label = "密码:">
                 <el-input type = "name" v-model = "form.password"></el-input>
             </el-form-item>
-            <el-form-item prop = "identity" label = "权限:">
+            <el-form-item prop = "identity" label = "权限:" v-if = "canUpdateIdentity">
                 <el-select v-model = "form.identity">
                   <el-option
                     v-for = "item in identityGroup"
@@ -54,25 +54,9 @@ export default {
     user () {
       return this.$store.state.user;
     },
-    identityGroup () {
-      if (this.user.identity == 'admin') {
-        return [{
-            label:"普通",
-            value:"normal"
-          },{
-            label:"管理员",
-            value:"manager"
-          }]
-      } else if (this.user.identity == 'manager') {
-        return [{
-            label:"普通",
-            value:"normal"
-          },
-        ]
-      } else {
-        return [];
-      }
-    }
+    canUpdateIdentity() {
+      return this.user.identity  == 'admin'
+    },
   },
   data() {
     var validatePass = (rule, value, callback) => {
@@ -87,6 +71,13 @@ export default {
         name: [{ required: true, message: "该选项不能为空", trigger: "blur" }],
         password: [{ validator: validatePass, trigger: "blur" }]
       },
+      identityGroup :[{
+        label:"普通",
+        value:"normal"
+      },{
+        label:"管理员",
+        value:"manager"
+      }]
     };
   },
   methods: {

@@ -32,9 +32,6 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item prop = "realname" label = "真实姓名:">
-                <el-input type = "name" v-model = "form.realname"></el-input>
-            </el-form-item>
 
             <el-form-item class = "text_right">
                 <el-button @click = "dialog.show = false">取 消</el-button>

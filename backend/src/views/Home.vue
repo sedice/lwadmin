@@ -1,8 +1,8 @@
 <template>
     <div class="home">
         <div class="container">
-            <h1 class="title">米修在线</h1>
-            <p class="lead"> 专注于线上教育, 用心做课程, 用心做服务! </p>
+            <h1 class="title">欢迎来到梁威管理系统</h1>
+            <p class="lead">威哥早上好</p>
         </div>
     </div>
 </template>
@@ -11,7 +11,7 @@
 .home {
   width: 100%;
   height: 100%;
-  background: url(../assets/showcase.png) no-repeat;
+  background: url(../assets/timg.jpg) no-repeat;
   background-size: 100% 100%;
 }
 .container {

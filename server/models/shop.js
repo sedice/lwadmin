@@ -15,7 +15,7 @@ schema.statics.findAll = async function (page = 1,pagesize = 10) {
   var total_num = await this.count();
   var total_page = tools.getTotalPage(total_num,pagesize);
   var skipNum = pagesize*(page - 1);
-  var group =  await this.find().skip(skipNum).limit(pagesize);
+  var group = await this.find().skip(skipNum).limit(pagesize).sort({ _id: -1 });
   var obj = {
     group,
     page,

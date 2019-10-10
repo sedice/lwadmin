@@ -3,11 +3,11 @@
         <el-row>
             <el-col :span="6" class='logo-container'>
                 <img src="../assets/logo.png" class='logo' alt="">
-                <span class='title'>米修在线后台管理系统</span>
+                <span class='title'>梁威后台管理系统</span>
             </el-col>
             <el-col :span='6' class="user">
                 <div class="userinfo">
-                    <img :src="user.avatar" class='avatar' alt="">
+                    <!-- <img :src="user.avatar" class='avatar' alt=""> -->
                      <div class='welcome'>
                         <p class='name comename'>欢迎</p>
                         <p class='name avatarname'>{{user.name}}</p>
@@ -29,21 +29,41 @@
             </el-col>
 
         </el-row>
-
+        <el-dialog
+          title="个人信息"
+          :visible.sync="dialogVisible"
+          width="30%"
+          >
+          <div class = "infoItem">账号:{{user.name}}</div>
+          <div class = "infoItem">权限:{{identity}}</div>
+        </el-dialog>
     </header>
 </template>
 <script>
 export default {
   name: "head-nav",
+  data () {
+    return {
+      dialogVisible:false,
+    }
+  },
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    identity () {
+      if (this.user.identity == 'admin') {
+        return 'admin'
+      } else if (this.user.identity == 'manager') {
+        return '管理员'
+      } else {
+        return '普通'
+      }
     }
   },
   methods: {
     setDialogInfo(cmditem) {
       if (!cmditem) {
-        console.log("test");
         this.$message("菜单选项缺少command属性");
         return;
       }
@@ -58,7 +78,7 @@ export default {
     },
     showInfoList() {
       // 个人信息
-      this.$router.push("/infoshow");
+      this.dialogVisible = true;
     },
     logout() {
       // 清除token
@@ -73,6 +93,11 @@ export default {
 </script>
 
 <style scoped>
+
+.infoItem {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
 .head-nav {
   width: 100%;
   height: 60px;

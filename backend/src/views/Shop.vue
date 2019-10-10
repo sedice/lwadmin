@@ -1,6 +1,6 @@
 <template>
   <div class="fillcontain">
-    
+    <TitlePanel title = "当前位置:  添加数据 / 门店管理"></TitlePanel>
     <!-- 添加框 -->
     <el-form>
       <el-form-item >
@@ -46,29 +46,15 @@
       </el-table> 
 
       <!-- 分页 -->
-      <el-row>
-        <el-col :span="24">
-          <div class="pagination">
-            <el-pagination
-              v-if="paginations.total > 0"
-              :page-sizes="paginations.page_sizes"
-              :page-size="paginations.page_size"
-              :layout="paginations.layout"
-              :total="paginations.total"
-              :current-page.sync="paginations.page_index"
-              @current-change="handleCurrentChange"
-              @size-change="handleSizeChange"
-            ></el-pagination>
-          </div>
-        </el-col>
-      </el-row>
-    <!-- 弹框页面 -->
+      <PagePanel :paginations = 'paginations' @updateData = 'getData'></PagePanel>
     </div>
   </div>
 </template>
 
 <script>
 import DialogShop from "../components/DialogShop";
+import TitlePanel from "../components/TitlePanel";
+import PagePanel from "../components/PagePanel";
 
 export default {
   name: "fundlist",
@@ -90,8 +76,6 @@ export default {
         page_index: 1, // 当前位于哪页
         total: 0, // 总数
         page_size: 10, // 1页显示多少条
-        page_sizes: [10, 20, 50], //每页显示多少条
-        layout: "total, sizes, prev, pager, next, jumper" // 翻页属性
       },
       search_data: {
         startTime: "",
@@ -109,7 +93,9 @@ export default {
     }
   },
   components: {
-    DialogShop
+    DialogShop,
+    TitlePanel,
+    PagePanel
   },
   created() {
     this.getData();
@@ -119,11 +105,9 @@ export default {
       // 获取表格数据
       var page = this.paginations.page_index;
       var pagesize = this.paginations.page_size;
-
       var url = `/api/shop?page=${page}&pagesize=${pagesize}`;
       this.$axios.get(url).then(res => {
         this.tableData = res.data.group;
-        // 设置分页数据
         this.setPaginations(res.data);
       });
     },
@@ -166,17 +150,7 @@ export default {
         name:""
       };
     },
-    handleCurrentChange(page) {
-      this.paginations.page_index = page;
-      this.getData();
-    },
-    handleSizeChange(page_size) {
-      this.paginations.page_index = 1;
-      this.paginations.page_size = page_size;
-      this.getData();
-    },
     setPaginations(data) {
-      // 总页数
       this.paginations.total = data.total_num;
       this.paginations.page_index = data.page;
       this.paginations.page_size = data.pagesize;

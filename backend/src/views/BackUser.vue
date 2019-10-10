@@ -1,6 +1,7 @@
 <template>
   <div class="fillcontain">
     
+    <TitlePanel title = "当前位置:  添加数据 / 后台用户管理"></TitlePanel>
     <!-- 添加框 -->
     <el-form>
       <el-form-item >
@@ -17,12 +18,11 @@
     <!-- 添加弹出 -->
     <DialogBackUser :dialog = "dialog" :form = "form" @update = "getData"></DialogBackUser>
     
-    <div class="table_container">
+    <div class="table_container" style = "width: 1200px;">
       <el-table
         :data = "tableData"
         max-height = "600"
         border
-        style = "width: 1200px;"
       >
         <el-table-column type = "index" label = "序号" align = "center" width = "70"></el-table-column>
         <el-table-column prop = "name" label = "账号" align = "center" ></el-table-column>
@@ -47,29 +47,15 @@
       </el-table> 
 
       <!-- 分页 -->
-      <el-row style="width:1200px;">
-        <el-col :span="24">
-          <div class="pagination">
-            <el-pagination
-              v-if="paginations.total > 0"
-              :page-sizes="paginations.page_sizes"
-              :page-size="paginations.page_size"
-              :layout="paginations.layout"
-              :total="paginations.total"
-              :current-page.sync="paginations.page_index"
-              @current-change="handleCurrentChange"
-              @size-change="handleSizeChange"
-            ></el-pagination>
-          </div>
-        </el-col>
-      </el-row>
-    <!-- 弹框页面 -->
+      <PagePanel :paginations = 'paginations' @updateData = 'getData'></PagePanel>
     </div>
   </div>
 </template>
 
 <script>
 import DialogBackUser from "../components/DialogBackUser";
+import TitlePanel from "../components/TitlePanel";
+import PagePanel from "../components/PagePanel";
 
 export default {
   data() {
@@ -91,8 +77,6 @@ export default {
         page_index: 1, // 当前位于哪页
         total: 0, // 总数
         page_size: 10, // 1页显示多少条
-        page_sizes: [10, 20, 50], //每页显示多少条
-        layout: "total, sizes, prev, pager, next, jumper" // 翻页属性
       }
     }
   },
@@ -106,7 +90,9 @@ export default {
     }
   },
   components: {
-    DialogBackUser
+    DialogBackUser,
+    TitlePanel,
+    PagePanel
   },
   created() {
     this.getData();
@@ -152,7 +138,7 @@ export default {
 
       if (userIdentity == 'manager' && row.identity == 'manager' && this.user.name != row.name) {
         this.$message({
-          type: 'success',
+          type: 'error',
           message: '您没有操作该管理员的权限'
         });
         return false;
@@ -161,6 +147,15 @@ export default {
     },
     onDeleteData(row, index) {
       if (!this.checkHasDelAndUpAccess(row)) return;
+      var userIdentity = this.user.identity;
+      if (userIdentity == 'manager' && row.identity == 'manager' && this.user.name == row.name) {
+        this.$message({
+          type: 'error',
+          message: '不能删除自己'
+        });
+        return;
+      }
+
       this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -189,15 +184,6 @@ export default {
         identity:"normal"
       };
     },
-    handleCurrentChange(page) {
-      this.paginations.page_index = page;
-      this.getData();
-    },
-    handleSizeChange(page_size) {
-      this.paginations.page_index = 1;
-      this.paginations.page_size = page_size;
-      this.getData();
-    },
     setPaginations(data) {
       // 总页数
       this.paginations.total = data.total_num;
@@ -214,6 +200,7 @@ export default {
 };
 </script>
 <style scoped>
+
 .fillcontain {
   width: 100%;
   height: 100%;
