@@ -1,16 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from './views/Index.vue'
-import Nofind from './views/404'
-import Login from './views/Login'
-import Home from './views/Home'
-import Shop from './views/Shop'
-import Goods from './views/Goods'
-import FrontUser from './views/FrontUser'
-import BackUser from './views/BackUser'
-import Store from './views/Store'
-import LackStore from './views/LackStore'
-import Replenish from './views/Replenish'
+
 
 Vue.use(Router)
 
@@ -18,23 +8,23 @@ const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    { path: '*', name: '/404', component: Nofind },
+    { path: '*', name: '/404', component: resolve => (require(["@/views/404"], resolve))},
     { path: '/', redirect: '/index' },
-    { path: '/login', name: 'login', component: Login },
+    { path: '/login', name: 'login', component: resolve => (require(["@/views/Login"], resolve)) },
     {
       path: '/index',
       name: 'index',
-      component: Index,
+      component: resolve => (require(["@/views/Index"], resolve)),
       children: [
-        { path: '', component: Home },
-        { path: '/home', name: 'home', component: Home },
-        { path: '/shop', name: 'shop', component: Shop },
-        { path: '/goods', name: 'goods', component: Goods },
-        { path: '/frontuser', name: 'frontuser', component: FrontUser },
-        { path: '/backuser', name: 'backuser', component: BackUser },
-        { path: '/store', name: 'store', component: Store },
-        { path: '/lackstore', name: 'lackstore', component: LackStore },
-        { path: '/replenish', name: 'replenish', component: Replenish },
+        { path: '', component:resolve => (require(["@/views/Home"], resolve)) },
+        { path: '/home', name: 'home', component: resolve => (require(["@/views/Home"], resolve)) },
+        { path: '/shop', name: 'shop', component: resolve => (require(["@/views/Shop"], resolve)) },
+        { path: '/goods', name: 'goods', component: resolve => (require(["@/views/Goods"], resolve)) },
+        { path: '/frontuser', name: 'frontuser', component: resolve => (require(["@/views/FrontUser"], resolve)) },
+        { path: '/backuser', name: 'backuser', component: resolve => (require(["@/views/BackUser"], resolve)) },
+        { path: '/store', name: 'store', component: resolve => (require(["@/views/Store"], resolve)) },
+        { path: '/lackstore', name: 'lackstore', component: resolve => (require(["@/views/LackStore"], resolve)) },
+        { path: '/replenish', name: 'replenish', component: resolve => (require(["@/views/Replenish"], resolve)) },
       ]
     },
   ]
