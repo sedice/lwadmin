@@ -1,11 +1,25 @@
 <template>
     <div class="home">
         <div class="container">
-            <h1 class="title">欢迎来到梁威管理系统</h1>
-            <p class="lead">威哥早上好</p>
+          <DownloadSerch></DownloadSerch>
         </div>
     </div>
 </template>
+
+<script>
+import DownloadSerch from "../components/DownloadSerch";
+export default {
+  components:{DownloadSerch},
+  data () {
+    return {
+
+    }
+  },
+  methods:{
+
+  }
+}
+</script>
 
 <style scoped>
 .home {

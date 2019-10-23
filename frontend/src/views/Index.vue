@@ -12,10 +12,10 @@
         <cell class="cellItem" title="历史缺货统计单" is-link link="/history_lack_store" ></cell>
       </group>
 
-      <group title="补货系统" title-color = "rgb(150,0,0)">
+      <!-- <group title="补货系统" title-color = "rgb(150,0,0)">
         <cell class="cellItem" title="新建补货统计单" is-link link="/new_replenish" ></cell>
         <cell class="cellItem" title="历史补货统计单" is-link link="/history_replenish" ></cell>
-      </group>
+      </group> -->
 
       <group title="个人资料" title-color = "rgb(150,0,0)">
         <cell class="cellItem" title="查看个人资料" is-link link="/userinfo" ></cell>

@@ -17,7 +17,7 @@ app.use(logger((str) => {
 
 // token过期
 app.use(koaJwt({secret:jwtSecret}).unless({
-  path:['/backend/backuser/login','/frontend/frontuser/login']
+  path: ['/backend/backuser/login', '/frontend/frontuser/login', '/backend/download/store']
 }))
 
 // 分析body

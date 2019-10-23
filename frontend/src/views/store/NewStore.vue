@@ -38,7 +38,7 @@
             class="inputItem"
             :is-type ='isNum'
             :show-clear="false"
-            placeholder = "请输入商品数量"
+            placeholder = "0"
             v-for = "(month,index) in monthgroup"
             :key = month
             :title = getMonthTitle(month)
@@ -92,6 +92,10 @@ export default {
     clickModifyItem (index) {
       var data = this.getTargetIndexItem(index);
       this.copyItem(data,this.modifyItem);
+      this.modifyItem.numgroup.forEach((vlue,index)=> {
+        if (vlue == 0)
+          this.modifyItem.numgroup[index] = "";
+      });
       this.showModifyPop = true;
     },
     getMonthTitle:function(month) {
@@ -101,6 +105,9 @@ export default {
       if (this.modifyItem.numgroup.every((val)=>this.isValidNum(val))) {
         var data = this.getTargetIndexItem(this.modifyItem.index);
         this.copyItem(this.modifyItem,data);
+        data.numgroup.forEach((vlue,index)=> {
+          data.numgroup[index] = data.numgroup[index] || 0;
+        });
         this.showModifyPop = false;
       } else {
         this.$vux.toast.show({
@@ -111,7 +118,7 @@ export default {
       }
     },
     isValidNum (val) {
-      return /^(0|[1-9][0-9]*)$/.test(val)
+      return val == "" || /^(0|[1-9][0-9]*)$/.test(val)
     },
     copyItem (from,to) {
       to.name = from.name;
