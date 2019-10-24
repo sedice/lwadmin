@@ -1,7 +1,8 @@
 <template>
   <div>
-    <el-form :inline="true" class="demo-form-inline" >
-      <el-form-item label="类型">
+    <h2 class = "cTitle">文件导出</h2>
+    <el-form :inline="true" class="demo-form-inline">
+      <el-form-item>
         <el-select v-model="serchRule.type" placeholder="请选择">
           <el-option
             v-for="item in serchRule.typeGroup"
@@ -50,14 +51,50 @@ export default {
     }
   },
   methods: {
+    getFilePreFix (type) {
+      var ret = "";
+      this.serchRule.typeGroup.forEach(val => {
+        if (type == val.value) {
+          ret = val.label;
+        }
+      });
+      return ret;
+    },
+    getTime(timeStamp) {
+      var time = new Date(timeStamp);
+      var year = time.getFullYear();
+      var month = time.getMonth() + 1;
+      if (month < 10) month = '0' + month;
+      var day = time.getDate();
+      if (day < 10) day = '0' + day;
+      return "" + year + month + day;
+    },
     downLoad () {
       var type = this.serchRule.type;
       var time_from = this.serchRule.time[0];
       var time_to = this.serchRule.time[1] + 23*59*59*1000;
       var url = `/api/download/${type}?time_from=${time_from}&time_to=${time_to}`
-      console.log(url)
-      window.location.href = url;
+
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+
+      var filePreFix = this.getFilePreFix(type);
+      time_from = this.getTime(time_from);
+      time_to = this.getTime(time_to);
+      link.setAttribute('download', `${filePreFix}_${time_from}至${time_to}.xlsx`);
+      document.body.appendChild(link)
+      link.click()
     },
   }
 };
 </script>
+
+<style lang="css" scoped>
+  .cTitle {
+    font-size: 60px;
+    height: 100px;
+    line-height:100px;
+    margin-bottom: 40px;
+  }
+</style>
