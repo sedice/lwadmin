@@ -11,6 +11,12 @@ import HistoryLackStoreDetail from '@/views/lack_store/HistoryLackStoreDetail'
 import NewReplenish from '@/views/replenish/NewReplenish'
 import HistoryReplenish from '@/views/replenish/HistoryReplenish'
 import HistoryReplenishDetail from '@/views/replenish/HistoryReplenishDetail'
+
+import NewHotGoodsStore from '@/views/hotgoods_store/NewHotGoodsStore'
+import HistoryHotGoodsStore from '@/views/hotgoods_store/HistoryHotGoodsStore'
+import HistoryHotGoodsStoreDetail from '@/views/hotgoods_store/HistoryHotGoodsStoreDetail'
+
+
 import UserInfo from '@/views/userinfo/UserInfo'
 import Nofind from '@/views/Nofind'
 
@@ -77,6 +83,21 @@ var router = new Router({
       path: '/history_replenish/:serchId',
       name: 'HistoryReplenishDetail',
       component: HistoryReplenishDetail,
+    },
+    {
+      path: '/new_hotgoodsstore',
+      name: 'NewHotGoodsStore',
+      component: NewHotGoodsStore,
+    },
+    {
+      path: '/history_hotgoodsstore',
+      name: 'HistoryHotGoodsStore',
+      component: HistoryHotGoodsStore,
+    },
+    {
+      path: '/history_hotgoodsstore/:serchId',
+      name: 'HistoryHotGoodsStoreDetail',
+      component: HistoryHotGoodsStoreDetail,
     },
     {
       path: '/userinfo',

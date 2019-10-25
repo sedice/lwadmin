@@ -75,6 +75,7 @@ export default {
           children: [
             { path: "shop", name: "门店管理"},
             { path: "goods", name: "商品管理"},
+            { path: "hotgoods", name: "爆品管理"},
             { path: "frontuser", name: "前台用户管理",identity:"manager"},
             { path: "backuser", name: "后台用户管理",identity:"manager"}
           ]

@@ -1,7 +1,7 @@
 <template>
   <div class="fillcontain">
     
-    <TitlePanel title = "当前位置:  添加数据 / 商品管理"></TitlePanel>
+    <TitlePanel title = "当前位置:  添加数据 / 爆品管理"></TitlePanel>
     <!-- 添加框 -->
     <el-form>
       <el-form-item >
@@ -16,7 +16,7 @@
     </el-form>
     
     <!-- 添加弹出 -->
-    <DialogGoods :dialog = "dialog" :form = "form" @update = "getData"></DialogGoods>
+    <DialogHotGoods :dialog = "dialog" :form = "form" @update = "getData"></DialogHotGoods>
     
     <div style="width:1000px;">
       <el-table
@@ -30,12 +30,6 @@
 
         <el-table-column v-if = "hasOperAccess" prop = "operation" align = "center" label = "操作" fixed = "right" width = "180">
           <template slot-scope = "scope">
-            <el-button
-              type="warning"
-              icon="edit"
-              size="small"
-              @click="onUpdateData(scope.row)"
-            >修改</el-button>
             <el-button
               type="danger"
               icon="delete"
@@ -53,7 +47,7 @@
 </template>
 
 <script>
-import DialogGoods from "../components/DialogGoods";
+import DialogHotGoods from "../components/DialogHotGoods";
 import TitlePanel from "../components/TitlePanel";
 import PagePanel from "../components/PagePanel";
 
@@ -61,15 +55,15 @@ export default {
   data() {
     return {
       tableData: [],
-      allTableData: [],
-      filterTableData: [],
+      shopgroup:[],
       dialog: {
         show: false,
         title: "",
         option: "edit"
       },
       form: {
-        name:""
+        name:"",
+        shopgroup:[]
       },
       //需要给分页组件传的信息
       paginations: {
@@ -93,7 +87,7 @@ export default {
     }
   },
   components: {
-    DialogGoods,
+    DialogHotGoods,
     TitlePanel,
     PagePanel
   },
@@ -105,8 +99,11 @@ export default {
       // 获取表格数据
       var page = this.paginations.page_index;
       var pagesize = this.paginations.page_size;
-      var url = `/api/goods?page=${page}&pagesize=${pagesize}`;
+      var url = `/api/hotgoods?page=${page}&pagesize=${pagesize}`;
       this.$axios.get(url).then(res => {
+        if (this.shopgroup.length == 0 && Array.isArray(res.data.shopgroup)) {
+          this.shopgroup = res.data.shopgroup;
+        }
         this.tableData = res.data.group;
         // 设置分页数据
         this.setPaginations(res.data);
@@ -121,7 +118,8 @@ export default {
       };
       this.form = {
         name:row.name,
-        id:row._id
+        id:row._id,
+        shopgroup:this.shopgroup
       };
     },
     onDeleteData(row, index) {
@@ -130,7 +128,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$axios.delete(`/api/goods/${row._id}`).then(res => {
+          this.$axios.delete(`/api/hotgoods/${row._id}`).then(res => {
             this.$message({
               type: 'success',
               message: '删除成功'
@@ -148,7 +146,8 @@ export default {
       };
 
       this.form = {
-        name:""
+        name:"",
+        shopgroup:this.shopgroup
       };
     },
     setPaginations(data) {

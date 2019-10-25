@@ -23,8 +23,9 @@ const router = new Router({
         { path: '/frontuser', name: 'frontuser', component: resolve => (require(["@/views/FrontUser"], resolve)) },
         { path: '/backuser', name: 'backuser', component: resolve => (require(["@/views/BackUser"], resolve)) },
         { path: '/store', name: 'store', component: resolve => (require(["@/views/Store"], resolve)) },
-        { path: '/lackstore', name: 'lackstore', component: resolve => (require(["@/views/LackStore"], resolve)) },
         { path: '/replenish', name: 'replenish', component: resolve => (require(["@/views/Replenish"], resolve)) },
+        { path: '/lackstore', name: 'lackstore', component: resolve => (require(["@/views/LackStore"], resolve)) },
+        { path: '/hotgoods', name: 'hotgoods', component: resolve => (require(["@/views/HotGoods"], resolve)) },
       ]
     },
   ]

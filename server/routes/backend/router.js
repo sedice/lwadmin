@@ -8,5 +8,6 @@ router.use('/store', require("./store").routes());
 router.use('/lackstore', require("./lackstore").routes());
 router.use('/replenish', require("./replenish").routes());
 router.use('/download', require("./download").routes());
+router.use('/hotgoods', require("./hotgoods").routes());
 
 module.exports = router
