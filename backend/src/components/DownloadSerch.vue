@@ -39,7 +39,7 @@ export default {
     var typeGroup = [
       {label:"库存统计",value:"store"},
       {label:"缺货统计",value:"lackstore"},
-      {label:"爆品统计",value:"baopin"}
+      {label:"爆品统计",value:"hotgoodsstore"}
     ];
     var time_0 = new Date(new Date(new Date().toLocaleDateString()).getTime()).valueOf();
     return {

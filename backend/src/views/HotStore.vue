@@ -1,6 +1,6 @@
 <template>
   <div class="fillcontain">
-    <TitlePanel title = "当前位置:  数据查询 / 库存数据查询"></TitlePanel>
+    <TitlePanel title = "当前位置:  数据查询 / 爆品库存查询"></TitlePanel>
     <!-- 头顶的搜索框 -->
     <SerchPanel
       @clickSerch = 'clickSerch' 
@@ -44,16 +44,16 @@
       <PagePanel :paginations = 'paginations' @updateData = 'getData'></PagePanel>
     </div>
     
-    <DialogStoreDetail
+    <DialogHotStoreDetail
       :dialogConf = 'dialogDetailConf'
-    ></DialogStoreDetail>
+    ></DialogHotStoreDetail>
   </div>
 </template>
 
 <script>
 
 import SerchPanel from "../components/SerchPanel";
-import DialogStoreDetail from "../components/DialogStoreDetail";
+import DialogHotStoreDetail from "../components/DialogHotStoreDetail";
 import TitlePanel from "../components/TitlePanel";
 import PagePanel from "../components/PagePanel";
 
@@ -94,7 +94,7 @@ export default {
   },
   components: {
     SerchPanel,
-    DialogStoreDetail,
+    DialogHotStoreDetail,
     TitlePanel,
     PagePanel
   },
@@ -116,15 +116,9 @@ export default {
       this.getData();
     },
     getDetailData (row) {
-      var url = `/api/store/${row._id}`;
+      var url = `/api/hotgoodsstore/${row._id}`;
       this.$axios.get(url).then(res => {
-        this.dialogDetailConf.monthgroup = res.data.monthgroup;
         this.dialogDetailConf.datagroup = res.data.datagroup;
-        this.dialogDetailConf.datagroup.forEach((item)=>{
-          item.numgroup.forEach((num ,index)=> {
-            item[this.dialogDetailConf.monthgroup[index] + '月'] = num;
-          })
-        })
         this.dialogDetailConf.visible = true;
         this.dialogDetailConf.title = this.getTitle(row);
       });
@@ -137,14 +131,14 @@ export default {
       if (month < 10) month = '0' + month;
       var day = time.getDate();
       if (day < 10) day = '0' + day;
-      return shop + "_" + creator + "_库存统计单_" + year + month + day + "_" + createindex;
+      return shop + "_" + creator + "_爆品库存统计单_" + year + month + day + "_" + createindex;
     },
     getData() {
       // 获取表格数据
       var page = this.paginations.page_index;
       var pagesize = this.paginations.page_size;
 
-      var url = `/api/store?page=${page}&pagesize=${pagesize}`;
+      var url = `/api/hotgoodsstore?page=${page}&pagesize=${pagesize}`;
       // 按创建者删选
       if (this.serchRule.creator) {
         url += `&creator=${this.serchRule.creator}`
@@ -192,7 +186,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$axios.delete(`/api/store/${row._id}`).then(res => {
+          this.$axios.delete(`/api/hotgoodsstore/${row._id}`).then(res => {
             this.$message({
               type: 'success',
               message: '删除成功'

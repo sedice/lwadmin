@@ -65,7 +65,7 @@ export default {
           children: [
             { path: "store", name: "库存查询" },
             { path: "lackstore", name: "缺货查询" },
-            { path: "replenish", name: "补货单查询" },
+            { path: "hotgoodsstore", name: "爆品库存查询" },
           ]
         },
         {

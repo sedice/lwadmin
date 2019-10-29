@@ -26,6 +26,7 @@ const router = new Router({
         { path: '/replenish', name: 'replenish', component: resolve => (require(["@/views/Replenish"], resolve)) },
         { path: '/lackstore', name: 'lackstore', component: resolve => (require(["@/views/LackStore"], resolve)) },
         { path: '/hotgoods', name: 'hotgoods', component: resolve => (require(["@/views/HotGoods"], resolve)) },
+        { path: '/hotgoodsstore', name: 'hotgoodsstore', component: resolve => (require(["@/views/HotStore"], resolve)) },
       ]
     },
   ]
