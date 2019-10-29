@@ -5,6 +5,7 @@ const NXlSX = require("node-xlsx");
 
 const storeModel = require("../../models/store")
 const lackStoreModel = require("../../models/lackstore")
+const hotGoodsStoreModel = require("../../models/hotgoodsstore")
 
 router.get('/store', async function (ctx, next) {
   var { time_from,time_to } = ctx.query;
@@ -119,7 +120,6 @@ async function getLackStoreData(model, time_from, time_to) {
 
 // store表每行的数据
 function getLackStoreRowData(data, array) {
-  console.log(data)
   data.datagroup.forEach((item) => {
     var group = [];
     group.push(array.length); // 序号
@@ -144,5 +144,54 @@ function getLackStoreTitle() {
   return array;
 }
 
+
+
+router.get('/hotgoodsstore', async function (ctx, next) {
+  var { time_from, time_to } = ctx.query;
+  time_from = parseInt(time_from);
+  time_to = parseInt(time_to);
+  var data = await getLackStoreData(hotGoodsStoreModel, time_from, time_to);
+  ctx.body = NXlSX.build([{ name: "sheetName", data: data }]);
+})
+
+async function getLackStoreData(model, time_from, time_to) {
+  var dataGroup = await model.find().where('createtime').gte(time_from).lte(time_to).exec();
+  var retArray = [];
+  retArray.push(getLackStoreTitle());
+  dataGroup.forEach((data, index) => {
+    getLackStoreRowData(data, retArray);
+  })
+  return retArray;
+}
+
+// store表每行的数据
+function getLackStoreRowData(data, array) {
+  data.datagroup.forEach((item) => {
+    var group = [];
+    group.push(array.length); // 序号
+    var createtime = getTime(data.createtime)
+    group.push(createtime); // 日期
+    group.push(data.shop); // 门店名称
+    group.push(data.creator); // 创建者
+    group.push(`${data.shop}_${data.creator}_${createtime}_${data.createindex}`); // 任务单号
+    group.push(item.name); // 商品名称
+    group.push(item.saleNum); // 销售数量
+    group.push(item.restNum); // 剩余数量
+    array.push(group);
+  })
+}
+
+function getLackStoreTitle() {
+  var array = [];
+  array.push("序号");
+  array.push("日期");
+  array.push("门店");
+  array.push("提交人");
+  array.push("任务单号");
+  array.push("商品名称");
+  array.push("当日销售库存");
+  array.push("剩余库存");
+  return array;
+}
 
 module.exports = router;

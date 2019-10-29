@@ -5,6 +5,7 @@ const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const Moment = require("moment");
 const koaJwt = require('koa-jwt')
+const usercheck = require("./utils/usercheck")
 
 
 const router = require("./routes/router");
@@ -19,10 +20,12 @@ app.use(logger((str) => {
 app.use(koaJwt({secret:jwtSecret}).unless({
   path: ['/backend/backuser/login',
   '/frontend/frontuser/login', 
-  '/backend/download/store', 
-  '/backend/download/lackstore', 
-  '/backend/download/store']
+  /\/backend\/download\/*/]
 }))
+
+// confirm
+
+app.use(usercheck)
 
 // 分析body
 app.use(bodyparser({enableTypes:['json', 'form', 'text']}))

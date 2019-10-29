@@ -42,6 +42,10 @@ schema.statics.findByName = async function (name) {
   return this.findOne({name}).exec();
 }
 
+schema.statics.findByNameAndShop = async function (name,shop) {
+  return this.findOne({ name, shop}).exec();
+}
+
 schema.statics.removeById = async function (id) {
   return this.deleteOne({_id:id}).exec();
 }

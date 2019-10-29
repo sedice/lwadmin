@@ -9,5 +9,6 @@ router.use('/lackstore', require("./lackstore").routes());
 router.use('/replenish', require("./replenish").routes());
 router.use('/download', require("./download").routes());
 router.use('/hotgoods', require("./hotgoods").routes());
+router.use('/hotgoodsstore', require("./hotgoodsstore").routes());
 
 module.exports = router
