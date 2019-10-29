@@ -8,7 +8,7 @@
       style = "position:fixed; top:0;width:100%; z-index:1"
     >新建爆品统计单</x-header>
 
-    <div class = "container" style = 'margin-top:50px;'>
+    <div class = "container" style = 'margin-top:50px; background-color:#eee'>
       <HotGoodsCard 
           class = "GoodsItem"
           v-for = "(goods) in datagroup" 
@@ -36,7 +36,7 @@
             :is-type ='isNum'
             :show-clear="false"
             placeholder = "0"
-            title = "今日销售数量"
+            title = "当日销售量"
             text-align = "center"
             v-model = "modifyItem.saleNum"
           ></x-input>

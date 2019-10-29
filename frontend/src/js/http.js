@@ -45,6 +45,7 @@ axios.interceptors.response.use(response => {
             break;
           case 401: 
             localStorage.removeItem('eleToken')
+            err.message = '检测到您的登录状态异常,需要重新登录(401)';
             // 页面跳转
             router.push('/login')
             break;

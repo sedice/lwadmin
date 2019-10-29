@@ -12,8 +12,8 @@
           <tr>
             <th style="width:10%;">序号</th>
             <th style="width:50%;">商品名称</th>
-            <th style="width:15%;">销售量</th>
-            <th style="width:15%;">剩余库存</th>
+            <th style="width:15%;">当日销售量</th>
+            <th style="width:15%;">剩余库存量</th>
           </tr>
         </thead>
         <tbody>

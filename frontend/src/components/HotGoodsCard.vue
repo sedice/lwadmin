@@ -3,7 +3,7 @@
       <div slot = "header">
         <!-- 第一行 序号 按钮-->
         <div style="height:35px; line-height:35px; ">
-          <span style="margin:0px 15px;">序号:</span><span >{{itemdata.index}}</span>
+          <span style="margin:0px 15px;">序号:</span><span >{{itemdata.index + 1}}</span>
           <x-button v-if = "showButton" type="warn" style=" float:right; margin:5px 5px; width:65px; font-size:12px;"
           @click.native="clickModify(itemdata.index)" >修改</x-button>
         </div>
