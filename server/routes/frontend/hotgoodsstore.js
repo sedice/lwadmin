@@ -7,7 +7,7 @@ const hotGoodsModel = require("../../models/hotgoods")
 // 获取自己所有的历史记录
 router.get('/',async (ctx,next) => {
     var data = await hotGoodsStoreModel.findAll({
-        name:ctx.state.user.name,
+        creator:ctx.state.user.name,
         page:1,
         pagesize:100
     });
