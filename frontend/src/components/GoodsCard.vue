@@ -12,16 +12,29 @@
           <span style="margin:0px 15px 0 15px;">名称:</span><span >{{itemdata.name}}</span>
         </div>
       </div>
-      <div slot="content" >
+      <div slot="content" class="table_wrapper">
         <XTable>
         <thead>
           <tr>
-            <th v-for = "(month) in monthgroup" :key="month" >{{month}}月</th>
+            <th class = "col" v-for = "(month) in preMonthArray" :key="month" >{{month}}月</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td v-for = "(num,index) in itemdata.numgroup" :key="index">{{num}}</td>
+            <td v-for = "(num,index) in preNumArray" :key="index">{{num}}</td>
+          </tr>
+        </tbody>
+        </XTable>
+
+        <XTable>
+        <thead>
+          <tr>
+            <th class = "col" v-for = "(month) in afterMonthArray" :key="month" >{{month}}月</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td v-for = "(num,index) in afterNumArray" :key="index">{{num}}</td>
           </tr>
         </tbody>
         </XTable>
@@ -40,6 +53,20 @@ export default {
      
     }
   },
+  computed:{
+    preMonthArray:function () {
+      return this.monthgroup.slice(0,6);
+    },
+    afterMonthArray:function() {
+      return this.monthgroup.slice(6);
+    },
+    preNumArray:function () {
+      return this.itemdata.numgroup.slice(0,6);
+    },
+    afterNumArray:function() {
+      return this.itemdata.numgroup.slice(6);
+    },
+  },
   methods:{
     clickModify (index) {
       this.$emit('clickModifyItem',index);
@@ -47,4 +74,10 @@ export default {
   }
 }
 </script>
+
+<style lang="css" scoped>
+  .col {
+    width:16.6667%;
+  }
+</style>
 
