@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class = "cTitle">文件导出</h2>
+    <h2 class="cTitle">文件导出</h2>
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
         <el-select v-model="serchRule.type" placeholder="请选择">
@@ -8,7 +8,8 @@
             v-for="item in serchRule.typeGroup"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.value"
+          >
           </el-option>
         </el-select>
       </el-form-item>
@@ -21,7 +22,8 @@
           unlink-panels
           range-separator="至"
           start-placeholder="开始日期"
-          end-placeholder="结束日期">
+          end-placeholder="结束日期"
+        >
         </el-date-picker>
       </el-form-item>
 
@@ -33,27 +35,30 @@
 </template>
 
 <script>
-
 export default {
   data() {
     var typeGroup = [
-      {label:"库存统计",value:"store"},
-      {label:"缺货统计",value:"lackstore"},
-      {label:"爆品统计",value:"hotgoodsstore"}
+      { label: "库存统计", value: "store" },
+      { label: "缺货统计", value: "lackstore" },
+      { label: "爆品统计", value: "hotgoodsstore" },
+      { label: "入库批次查询", value: "batch_record_in" },
+      { label: "出库批次查询", value: "batch_record_out" },
     ];
-    var time_0 = new Date(new Date(new Date().toLocaleDateString()).getTime()).valueOf();
+    var time_0 = new Date(
+      new Date(new Date().toLocaleDateString()).getTime()
+    ).valueOf();
     return {
-      serchRule:{
+      serchRule: {
         typeGroup,
-        type:typeGroup[0].value,
-        time:[time_0,time_0],
-      }
-    }
+        type: typeGroup[0].value,
+        time: [time_0, time_0],
+      },
+    };
   },
   methods: {
-    getFilePreFix (type) {
+    getFilePreFix(type) {
       var ret = "";
-      this.serchRule.typeGroup.forEach(val => {
+      this.serchRule.typeGroup.forEach((val) => {
         if (type == val.value) {
           ret = val.label;
         }
@@ -64,37 +69,48 @@ export default {
       var time = new Date(timeStamp);
       var year = time.getFullYear();
       var month = time.getMonth() + 1;
-      if (month < 10) month = '0' + month;
+      if (month < 10) month = "0" + month;
       var day = time.getDate();
-      if (day < 10) day = '0' + day;
+      if (day < 10) day = "0" + day;
       return "" + year + month + day;
     },
-    downLoad () {
-      var type = this.serchRule.type;
+    downLoad() {
+      const type = this.serchRule.type;
       var time_from = this.serchRule.time[0];
-      var time_to = this.serchRule.time[1] + 23*59*59*1000;
-      var url = `/api/download/${type}?time_from=${time_from}&time_to=${time_to}`
+      var time_to = this.serchRule.time[1] + 23 * 59 * 59 * 1000;
+      var url = `/api/download/`;
+      if (type === "batch_record_in") {
+        url += `batch_record?type=in&`;
+      } else if (type === "batch_record_out") {
+        url += `batch_record?type=out&`;
+      } else {
+        url += `${type}?`;
+      }
+      url += `time_from=${time_from}&time_to=${time_to}`;
 
-      let link = document.createElement('a')
-      link.style.display = 'none'
-      link.href = url
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
 
       var filePreFix = this.getFilePreFix(type);
       time_from = this.getTime(time_from);
       time_to = this.getTime(time_to);
-      link.setAttribute('download', `${filePreFix}_${time_from}至${time_to}.xlsx`);
-      document.body.appendChild(link)
-      link.click()
+      link.setAttribute(
+        "download",
+        `${filePreFix}_${time_from}至${time_to}.xlsx`
+      );
+      document.body.appendChild(link);
+      link.click();
     },
-  }
+  },
 };
 </script>
 
 <style lang="css" scoped>
-  .cTitle {
-    font-size: 60px;
-    height: 100px;
-    line-height:100px;
-    margin-bottom: 40px;
-  }
+.cTitle {
+  font-size: 60px;
+  height: 100px;
+  line-height: 100px;
+  margin-bottom: 40px;
+}
 </style>

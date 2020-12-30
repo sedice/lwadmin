@@ -1,1 +1,1 @@
-E:\SoftWare\mongodb\bin\mongod --dbpath ../db/data
+C:/soft/mongodb/bin/mongod --dbpath C:/soft/mongodb/data/db 

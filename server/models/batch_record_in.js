@@ -1,9 +1,7 @@
 var mongoose = require("../utils/db");
 const tools = require("../utils/tools");
 
-var Schema = mongoose.Schema;
-
-var schema = new Schema({
+var schema = new mongoose.Schema({
   shop: {
     type: String,
     required: true,
@@ -20,12 +18,8 @@ var schema = new Schema({
     type: Number,
     required: true,
   },
-  monthgroup: {
-    type: [Number],
-    required: true,
-  },
   datagroup: {
-    type: [Object],
+    type: [mongoose.SchemaTypes.Mixed],
     require: true,
   },
 });
@@ -76,10 +70,6 @@ schema.statics.findAll = async function (params) {
   return obj;
 };
 
-schema.statics.findById = async function (id) {
-  return this.findOne({ _id: id }).exec();
-};
-
 schema.statics.getNextIndex = async function (creator) {
   var startDate = new Date(new Date().toLocaleDateString()).valueOf();
   var endDate = new Date(
@@ -105,8 +95,4 @@ schema.statics.getNextIndex = async function (creator) {
   return nextIndex;
 };
 
-schema.statics.removeById = async function (id) {
-  return this.deleteOne({ _id: id }).exec();
-};
-
-module.exports = mongoose.model("Store", schema);
+module.exports = mongoose.model("BatchRecordIn", schema);

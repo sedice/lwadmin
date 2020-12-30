@@ -1,6 +1,6 @@
 <template>
   <div class="fillcontain">
-    <TitlePanel title="当前位置:  添加数据 / 商品管理"></TitlePanel>
+    <TitlePanel title="当前位置:  添加数据 / 批次商品管理"></TitlePanel>
     <!-- 添加框 -->
     <el-form>
       <el-form-item>
@@ -16,7 +16,11 @@
     </el-form>
 
     <!-- 添加弹出 -->
-    <DialogGoods :dialog="dialog" :form="form" @update="getData"></DialogGoods>
+    <DialogBatchGoods
+      :dialog="dialog"
+      :form="form"
+      @update="getData"
+    ></DialogBatchGoods>
 
     <div style="width:1000px;">
       <el-table :data="tableData" max-height="600" border style="width: 100%">
@@ -42,13 +46,6 @@
         >
           <template slot-scope="scope">
             <el-button
-              type="warning"
-              icon="edit"
-              size="small"
-              @click="onUpdateData(scope.row)"
-              >修改</el-button
-            >
-            <el-button
               type="danger"
               icon="delete"
               size="small"
@@ -58,15 +55,12 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <PagePanel :paginations="paginations" @updateData="getData"></PagePanel>
-      <!-- 弹框页面 -->
     </div>
   </div>
 </template>
 
 <script>
-import DialogGoods from "../components/DialogGoods";
+import DialogBatchGoods from "../components/DialogBatchGoods";
 import TitlePanel from "../components/TitlePanel";
 import PagePanel from "../components/PagePanel";
 
@@ -106,7 +100,7 @@ export default {
     },
   },
   components: {
-    DialogGoods,
+    DialogBatchGoods,
     TitlePanel,
     PagePanel,
   },
@@ -118,11 +112,11 @@ export default {
       // 获取表格数据
       var page = this.paginations.page_index;
       var pagesize = this.paginations.page_size;
-      var url = `/api/goods?page=${page}&pagesize=${pagesize}`;
+      var url = `/api/batch_goods?page=${page}&pagesize=${pagesize}`;
       this.$axios.get(url).then((res) => {
-        this.tableData = res.data.group;
+        this.tableData = res.data;
         // 设置分页数据
-        this.setPaginations(res.data);
+        // this.setPaginations(res.data);
       });
     },
     onUpdateData(row) {
@@ -137,14 +131,14 @@ export default {
         id: row._id,
       };
     },
-    onDeleteData(row, index) {
+    onDeleteData(row) {
       this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          this.$axios.delete(`/api/goods/${row._id}`).then((res) => {
+          this.$axios.delete(`/api/batch_goods/${row._id}`).then(() => {
             this.$message({
               type: "success",
               message: "删除成功",

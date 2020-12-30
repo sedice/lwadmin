@@ -1,6 +1,6 @@
 <template>
   <div class="fillcontain">
-    <TitlePanel title="当前位置:  数据查询 / 库存数据查询"></TitlePanel>
+    <TitlePanel :title="topTitle"></TitlePanel>
     <!-- 头顶的搜索框 -->
     <SerchPanel @clickSerch="clickSerch" :serchRule="serchRule"></SerchPanel>
     <div class="table_container">
@@ -64,18 +64,20 @@
           </template>
         </el-table-column>
       </el-table>
-
       <!-- 分页 -->
       <PagePanel :paginations="paginations" @updateData="getData"></PagePanel>
     </div>
 
-    <DialogStoreDetail :dialogConf="dialogDetailConf"></DialogStoreDetail>
+    <DialogPatchDetail
+      :dialogConf="dialogDetailConf"
+      v-if="dialogDetailConf.visible"
+    ></DialogPatchDetail>
   </div>
 </template>
 
 <script>
 import SerchPanel from "../components/SerchPanel";
-import DialogStoreDetail from "../components/DialogStoreDetail";
+import DialogPatchDetail from "../components/DialogPatchDetail";
 import TitlePanel from "../components/TitlePanel";
 import PagePanel from "../components/PagePanel";
 
@@ -89,8 +91,7 @@ export default {
       dialogDetailConf: {
         visible: false,
         title: "",
-        datagroup: [],
-        monthgroup: [],
+        data: {},
       },
       serchRule: {
         creator: "",
@@ -107,24 +108,40 @@ export default {
     };
   },
   computed: {
+    isOut() {
+      return this.$route.query.type === "out" ? true : false;
+    },
+    typeStr() {
+      return this.isOut ? "out" : "in";
+    },
     user() {
       return this.$store.getters.user;
     },
     hasOperAccess() {
       return this.user.identity == "admin" || this.user.identity == "manager";
     },
+    topTitle() {
+      return this.isOut
+        ? "当前位置:  数据查询 / 出库批次查询"
+        : "当前位置:  数据查询 / 入库批次查询";
+    },
   },
   components: {
     SerchPanel,
-    DialogStoreDetail,
+    DialogPatchDetail,
     TitlePanel,
     PagePanel,
   },
   created() {
     this.getData();
   },
+  watch: {
+    $route() {
+      this.getData();
+    },
+  },
   methods: {
-    formatDate(row, column, cellValue, index) {
+    formatDate(row, column, cellValue) {
       var time = new Date(cellValue);
       var year = time.getFullYear();
       var month = time.getMonth() + 1;
@@ -138,13 +155,12 @@ export default {
       this.getData();
     },
     getDetailData(row) {
-      var url = `/api/store/${row._id}`;
+      var url = `/api/batch_record/${row._id}?type=${this.typeStr}`;
       this.$axios.get(url).then((res) => {
-        this.dialogDetailConf.monthgroup = res.data.monthgroup;
         this.dialogDetailConf.datagroup = res.data.datagroup;
         this.dialogDetailConf.datagroup.forEach((item) => {
-          item.numgroup.forEach((num, index) => {
-            item[this.dialogDetailConf.monthgroup[index] + "月"] = num;
+          item.nums.forEach((num, index) => {
+            item["批次" + (index + 1)] = num;
           });
         });
         this.dialogDetailConf.visible = true;
@@ -163,7 +179,9 @@ export default {
         shop +
         "_" +
         creator +
-        "_库存统计单_" +
+        "_" +
+        (this.isOut ? "出库" : "入库") +
+        "批次统计单_" +
         year +
         month +
         day +
@@ -176,7 +194,7 @@ export default {
       var page = this.paginations.page_index;
       var pagesize = this.paginations.page_size;
 
-      var url = `/api/store?page=${page}&pagesize=${pagesize}`;
+      var url = `/api/batch_record?page=${page}&pagesize=${pagesize}&type=${this.typeStr}`;
       // 按创建者删选
       if (this.serchRule.creator) {
         url += `&creator=${this.serchRule.creator}`;
@@ -196,7 +214,7 @@ export default {
       this.$axios.get(url).then((res) => {
         // 初始化商品的数组
         if (this.serchRule.shopgroup.length == 0) {
-          var shopgroup = res.data.shopgroup;
+          const shopgroup = res.data.shopgroup;
           this.serchRule.shopgroup.push({
             label: "全部",
             value: undefined,
@@ -225,13 +243,15 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.$axios.delete(`/api/store/${row._id}`).then((res) => {
-            this.$message({
-              type: "success",
-              message: "删除成功",
+          this.$axios
+            .delete(`/api/batch_record/${row._id}?type=${this.typeStr}`)
+            .then(() => {
+              this.$message({
+                type: "success",
+                message: "删除成功",
+              });
+              this.getData();
             });
-            this.getData();
-          });
         })
         .catch(() => {});
     },
